@@ -123,13 +123,18 @@ export class MessageResolver {
     );
   }
 
+  // declaring a function to like a message. the : after the () is the return type of the function
+  // Promise is a built in type for async functions
+  // <ChatMessage> is a generic type parameter, it is a type of ChatMessage
+  // So the function will return a promise that resolves to a ChatMessage object.
+  // So the function need sto return something of type ChatMessage.
   @Mutation(() => ChatMessage)
   @UseGuards(GqlAuthGuard)
   async likeConversationMessage(
     @Args('likeMessageDto') likeMessageDto: LikeMessageDto,
     @AuthenticatedUser() authenticatedUser: IAuthenticatedUser,
   ): Promise<ChatMessage> {
-    await this.messageLogic.like(likeMessageDto, authenticatedUser);
+    return await this.messageLogic.like(likeMessageDto, authenticatedUser);
   }
 
   @Mutation(() => ChatMessage)
