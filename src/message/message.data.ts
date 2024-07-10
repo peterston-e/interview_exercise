@@ -42,7 +42,6 @@ export class MessageData {
     return chatMessageToObject(message);
   }
 
-
   async getChatConversationMessages(
     data: GetMessageDto,
   ): Promise<PaginatedChatMessages> {
@@ -88,8 +87,25 @@ export class MessageData {
   }
 
   async delete(messageId: ObjectID): Promise<ChatMessage> {
-    // TODO allow a message to be marked as deleted
-    return new ChatMessage() // Minimum to pass ts checks -replace this
+    // ** TODO allow a message to be marked as deleted **
+    // Problem was either the test or this function.
+    // Followed the problem to the delete function here. it was clearly marked as a todo.
+    // The function below provided the implementation to mark a message as deleted.
+    // After that it was a case of copying the format of the other functions below.
+    const filterBy = { _id: messageId };
+    const updateProperty = { deleted: true }; // Mark the message as deleted
+    const deletedMessage = await this.chatMessageModel.findOneAndUpdate(
+      filterBy,
+      updateProperty,
+      {
+        new: true,
+        returnOriginal: false,
+      },
+    );
+    if (!deletedMessage)
+      throw new Error('The message to delete does not exist');
+
+    return chatMessageToObject(deletedMessage);
   }
 
   async resolve(messageId: ObjectID): Promise<ChatMessage> {
